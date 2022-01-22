@@ -2,6 +2,8 @@ package org.hildan.dumbocr
 
 import kotlin.math.abs
 
+const val DEFAULT_COLOR_FILTER_TOLERANCE = 25
+
 /**
  * An ARGB color.
  *
@@ -39,7 +41,7 @@ fun interface ColorFilter {
  */
 class ColorSimilarityFilter(
     private val referenceColor: Color,
-    private val tolerance: Int = 25,
+    private val tolerance: Int = DEFAULT_COLOR_FILTER_TOLERANCE,
 ): ColorFilter {
     init {
         require(tolerance >= 0) { "tolerance is a distance and must not be negative"}

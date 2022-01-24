@@ -2,8 +2,6 @@ package org.hildan.dumbocr
 
 import kotlin.math.abs
 
-const val DEFAULT_COLOR_FILTER_TOLERANCE = 25
-
 /**
  * An ARGB color.
  *
@@ -47,20 +45,27 @@ fun interface ColorFilter {
  * A [ColorFilter] that matches colors that are close enough to the given [referenceColor].
  *
  * Colors are considered "close enough" to the reference color when each of the ARGB component is different from the
- * corresponding component in the [referenceColor] by no more than the given [tolerance].
+ * corresponding component in the [referenceColor] by no more than the given [rgbTolerance] (or [alphaTolerance],
+ * accordingly).
  */
 class ColorSimilarityFilter(
     private val referenceColor: Color,
-    private val tolerance: Int = DEFAULT_COLOR_FILTER_TOLERANCE,
+    private val rgbTolerance: Int = 25,
+    private val alphaTolerance: Int = 0,
 ): ColorFilter {
     init {
-        require(tolerance >= 0) { "tolerance is a distance and must not be negative"}
+        require(rgbTolerance >= 0) { "rgbTolerance is a distance and must not be negative" }
+        require(alphaTolerance >= 0) { "alphaTolerance is a distance and must not be negative" }
     }
 
-    override fun matches(c: Color): Boolean = closeEnough(c.alpha, referenceColor.alpha)
-        && closeEnough(c.red, referenceColor.red)
-        && closeEnough(c.green, referenceColor.green)
-        && closeEnough(c.blue, referenceColor.blue)
+    override fun matches(c: Color): Boolean = alphaCloseEnough(c.alpha, referenceColor.alpha)
+        && rgbCloseEnough(c.red, referenceColor.red)
+        && rgbCloseEnough(c.green, referenceColor.green)
+        && rgbCloseEnough(c.blue, referenceColor.blue)
 
-    private fun closeEnough(a: UByte, b: UByte) = abs(a.toInt() - b.toInt()) <= tolerance
+    private fun alphaCloseEnough(a: UByte, b: UByte) = distance(a, b) <= alphaTolerance
+
+    private fun rgbCloseEnough(a: UByte, b: UByte) = distance(a, b) <= rgbTolerance
+
+    private fun distance(a: UByte, b: UByte) = abs(a.toInt() - b.toInt())
 }

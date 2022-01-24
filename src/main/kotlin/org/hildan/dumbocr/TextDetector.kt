@@ -14,6 +14,10 @@ fun List<ImagePart>.filterTextSubImages() = mapNotNull { (it as? ImagePart.TextS
  */
 class TextDetector(
     private val textColorFilter: ColorFilter,
+    /**
+     * Whether to trim the space above and below the text in sub-images.
+     */
+    private val trimSubImagesVertically: Boolean = true,
 ) {
     /**
      * Creates a new [TextDetector] using a [ColorSimilarityFilter] with the given [textColor] as reference.
@@ -70,10 +74,12 @@ class TextDetector(
     }
 
     private fun BufferedImage.extractPart(colRange: IntRange, hasText: Boolean) = if (hasText) {
-        ImagePart.TextSubImage(verticalSlice(colRange).trimTopAndBottom())
+        ImagePart.TextSubImage(verticalSlice(colRange).maybeTrimTopAndBottom())
     } else {
         ImagePart.Space(width = colRange.length)
     }
+
+    private fun BufferedImage.maybeTrimTopAndBottom() = if (trimSubImagesVertically) trimTopAndBottom() else this
 
     private fun BufferedImage.trimTopAndBottom(): BufferedImage {
         val firstTextRow = (0 until height).first { row -> hasTextInRow(row) }

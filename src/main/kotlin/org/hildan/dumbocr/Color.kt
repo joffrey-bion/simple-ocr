@@ -11,19 +11,29 @@ const val DEFAULT_COLOR_FILTER_TOLERANCE = 25
  * There are therefore 8 bits of precision for each component.
  */
 @JvmInline
-value class Color(private val argb: UInt) {
+value class Color(val argb: UInt) {
     val alpha get() = (argb shr 24).toUByte()
     val red get() = (argb shr 16).toUByte()
     val green get() = (argb shr 8).toUByte()
     val blue get() = argb.toUByte()
+
+    constructor(alpha: UInt, red: UInt, green: UInt, blue: UInt) : this(argbUInt(alpha, red, green, blue))
+
+    constructor(alpha: UByte, red: UByte, green: UByte, blue: UByte) :
+        this(alpha.toUInt(), red.toUInt(), green.toUInt(), blue.toUInt())
 
     override fun toString(): String = "0x${argb.toString(16)}"
 
     companion object {
         val WHITE = Color(0xffffffffu)
         val BLACK = Color(0xff000000u)
+        val TRANSPARENT = Color(0x00000000u)
     }
 }
+
+// can't do shift operations on bytes
+private fun argbUInt(alpha: UInt, red: UInt, green: UInt, blue: UInt) =
+    (alpha shl 24) or (red shl 16) or (green shl 8) or blue
 
 /**
  * A predicate on [Color].

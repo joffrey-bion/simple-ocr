@@ -1,5 +1,6 @@
 package org.hildan.dumbocr
 
+import org.hildan.dumbocr.generation.UniqueImageStore
 import java.awt.image.BufferedImage
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -21,25 +22,34 @@ data class ReferenceImage(
     val image: BufferedImage,
     /** The text value corresponding to the image. */
     val text: String,
-)
+) {
+    companion object {
+        /**
+         * Reads a [ReferenceImage] from a resource image at the given absolute [resourcePath] (must start with a '/'),
+         * and associated to the given [text].
+         */
+        fun readFromResource(resourcePath: String, text: String): ReferenceImage =
+            ReferenceImage(image = resourceImage(resourcePath), text = text)
+    }
+}
 
-/**
- * Reads a [ReferenceImage] from a resource image at the given absolute [resourcePath] (must start with a '/'), and
- * associated to the given [text].
- */
-fun referenceImage(resourcePath: String, text: String): ReferenceImage =
-    ReferenceImage(image = resourceImage(resourcePath), text = text)
+object ReferenceImages {
 
-/**
- * Reads [ReferenceImage]s from the given [directory], associating them with text based on their names.
- *
- * If it contains no spaces, the name without extension of the image file is used as text for the image.
- * Otherwise, only the part of the name up to the first space is used as text.
- * This is to allow mapping several images to the same text (we can add a space and more info to make the names
- * different).
- */
-fun readReferenceImagesFrom(directory: Path): List<ReferenceImage> = directory.listDirectoryEntries().map {
-    ReferenceImage(image = it.readImage(), text = inferTextFromPath(it))
+    /**
+     * Reads [ReferenceImage]s from the given [directory], associating them with text based on their names.
+     *
+     * If it contains no spaces, the name without extension of the image file is used as text for the image.
+     * Otherwise, only the part of the name up to the first space is used as text.
+     *
+     * This way, more info can be added to the name after a space, which can be useful to map several images to the
+     * same text, or have images for lowercase and uppercase letters on case-insensitive file systems (for example,
+     * `"a.png"` and `"A upper.png"`.
+     *
+     * A [glob] pattern can be used to filter the files from the given [directory].
+     */
+    fun readFrom(directory: Path, glob: String = "*"): List<ReferenceImage> = directory.listDirectoryEntries(glob).map {
+        ReferenceImage(image = it.readImage(), text = inferTextFromPath(it))
+    }
 }
 
 // ignores anything after a space to allow disambiguation on case-insensitive file systems
@@ -66,6 +76,20 @@ fun TextDetector.splitAndSaveSubImages(
 }
 
 /**
+ * Splits the given [image] into sub-images of text elements, and saves them as files into the given [imageStore].
+ * The image store reuses images and doesn't write duplicates.
+ *
+ * Sub-images are often individual characters, but sometimes several characters can be grouped together due to kerning.
+ * For instance, a lowercase letter following an uppercase T ou V can be part of a single sub-image (Te, To, Va...).
+ */
+fun TextDetector.splitAndSaveSubImages(
+    image: BufferedImage,
+    imageStore: UniqueImageStore,
+): List<Path> = splitTextElements(image).map { subImg ->
+    imageStore.saveOrGetPath(subImg)
+}
+
+/**
  * Splits the given [image] into sub-images of text elements, and saves them as files into the given [outputDir].
  * Each file is named based on the characters (more specifically, the unicode code points) in [imageText].
  * Characters that are not valid as file names are escaped.
@@ -84,10 +108,12 @@ fun TextDetector.splitAndSaveCharacterImages(
     outputDir: Path,
 ): Map<String, Path> {
     val textWithoutWhitespace = imageText.replace(whiteSpaceRegex, "")
-    val codePoints = textWithoutWhitespace.codePoints().toList().map { String(Character.toChars(it)) }
+    val codePoints = textWithoutWhitespace.splitCodePoints()
     val paths = splitAndSaveSubImages(image, outputDir) { index, _ -> codePoints[index].escapeCharForFilename() }
     return codePoints.mapIndexed { index, c -> c to paths[index] }.toMap()
 }
+
+private fun String.splitCodePoints() = codePoints().toList().map { String(Character.toChars(it)) }
 
 // extending string to support code points above the BMP
 private fun String.escapeCharForFilename() = when(this) {

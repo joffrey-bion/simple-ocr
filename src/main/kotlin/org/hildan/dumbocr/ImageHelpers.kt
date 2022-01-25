@@ -1,6 +1,7 @@
 package org.hildan.dumbocr
 
 import java.awt.image.BufferedImage
+import java.io.ByteArrayOutputStream
 import java.nio.file.Path
 import javax.imageio.ImageIO
 
@@ -14,3 +15,12 @@ fun Path.readImage(): BufferedImage = ImageIO.read(toFile())
  */
 fun resourceImage(resourcePath: String): BufferedImage =
     ImageIO.read(ReferenceImage::class.java.getResourceAsStream(resourcePath))
+
+/**
+ * Converts this [BufferedImage] to bytes in the given [format].
+ */
+fun BufferedImage.toByteArray(format: String): ByteArray {
+    val baos = ByteArrayOutputStream()
+    ImageIO.write(this, format, baos)
+    return baos.toByteArray()
+}

@@ -2,19 +2,36 @@ package org.hildan.dumbocr
 
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.nio.file.Path
 import javax.imageio.ImageIO
 
 /**
- * Reads an image from the file at this path.
+ * Reads a [BufferedImage] from the file at this path.
  */
 fun Path.readImage(): BufferedImage = ImageIO.read(toFile())
 
 /**
- * Reads an image from a resource at the given absolute [resourcePath] (must start with a '/').
+ * Reads a [BufferedImage] from this input stream.
+ */
+fun InputStream.readImage(): BufferedImage = ImageIO.read(this)
+
+/**
+ * Reads a [BufferedImage] from a resource at the given [resourcePath] relative to this instance's class.
+ *
+ * This is a helper on top of [Class.getResourceAsStream]. See that method for more information on the resolution.
+ */
+fun Any.resourceImage(resourcePath: String): BufferedImage = javaClass.getResourceAsStream(resourcePath)?.readImage()
+    ?: throw IllegalArgumentException("Resource not found at path $resourcePath")
+
+/**
+ * Reads a [BufferedImage] from a resource at the given [resourcePath] using the context class loader.
+ *
+ * This is a helper on top of [Class.getResourceAsStream]. See that method for more information on the resolution.
  */
 fun resourceImage(resourcePath: String): BufferedImage =
-    ImageIO.read(ReferenceImage::class.java.getResourceAsStream(resourcePath))
+    Thread.currentThread().contextClassLoader.getResourceAsStream(resourcePath)?.readImage()
+        ?: throw IllegalArgumentException("Resource not found at path $resourcePath")
 
 /**
  * Converts this [BufferedImage] to bytes in the given [format].

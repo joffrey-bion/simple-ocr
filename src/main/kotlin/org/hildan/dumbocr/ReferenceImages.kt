@@ -22,16 +22,7 @@ data class ReferenceImage(
     val image: BufferedImage,
     /** The text value corresponding to the image. */
     val text: String,
-) {
-    companion object {
-        /**
-         * Reads a [ReferenceImage] from a resource image at the given absolute [resourcePath] (must start with a '/'),
-         * and associated to the given [text].
-         */
-        fun readFromResource(resourcePath: String, text: String): ReferenceImage =
-            ReferenceImage(image = resourceImage(resourcePath), text = text)
-    }
-}
+)
 
 object ReferenceImages {
 

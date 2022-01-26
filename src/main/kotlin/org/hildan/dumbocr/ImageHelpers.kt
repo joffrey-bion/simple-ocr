@@ -21,17 +21,8 @@ fun InputStream.readImage(): BufferedImage = ImageIO.read(this)
  *
  * This is a helper on top of [Class.getResourceAsStream]. See that method for more information on the resolution.
  */
-fun Any.resourceImage(resourcePath: String): BufferedImage = javaClass.getResourceAsStream(resourcePath)?.readImage()
+fun Class<*>.getResourceImage(resourcePath: String): BufferedImage = getResourceAsStream(resourcePath)?.readImage()
     ?: throw IllegalArgumentException("Resource not found at path $resourcePath")
-
-/**
- * Reads a [BufferedImage] from a resource at the given [resourcePath] using the context class loader.
- *
- * This is a helper on top of [Class.getResourceAsStream]. See that method for more information on the resolution.
- */
-fun resourceImage(resourcePath: String): BufferedImage =
-    Thread.currentThread().contextClassLoader.getResourceAsStream(resourcePath)?.readImage()
-        ?: throw IllegalArgumentException("Resource not found at path $resourcePath")
 
 /**
  * Converts this [BufferedImage] to bytes in the given [format].

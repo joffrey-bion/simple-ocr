@@ -106,11 +106,9 @@ fun TextDetector.splitAndSaveCharacterImages(
     image: BufferedImage,
     imageText: String,
     outputDir: Path,
-): Map<String, Path> {
-    val textWithoutWhitespace = imageText.replace(whiteSpaceRegex, "")
-    val codePoints = textWithoutWhitespace.splitCodePoints()
-    val paths = splitAndSaveSubImages(image, outputDir) { index, _ -> codePoints[index].escapeCharForFilename() }
-    return codePoints.mapIndexed { index, c -> c to paths[index] }.toMap()
+): List<Path> {
+    val codePoints = imageText.replace(whiteSpaceRegex, "").splitCodePoints()
+    return splitAndSaveSubImages(image, outputDir) { index, _ -> codePoints[index].escapeCharForFilename() }
 }
 
 private fun String.splitCodePoints() = codePoints().toList().map { String(Character.toChars(it)) }

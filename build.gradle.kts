@@ -8,3 +8,12 @@ description = "A dumb OCR that recognizes characters in an image given a set of 
 repositories {
     mavenCentral()
 }
+
+dependencies {
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

@@ -15,9 +15,9 @@ value class Color(val argb: UInt) {
     val green get() = (argb shr 8).toUByte()
     val blue get() = argb.toUByte()
 
-    constructor(alpha: UInt, red: UInt, green: UInt, blue: UInt) : this(argbUInt(alpha, red, green, blue))
+    constructor(alpha: UInt = 0xffu, red: UInt, green: UInt, blue: UInt) : this(argbUInt(alpha, red, green, blue))
 
-    constructor(alpha: UByte, red: UByte, green: UByte, blue: UByte) :
+    constructor(alpha: UByte = 0xffu, red: UByte, green: UByte, blue: UByte) :
         this(alpha.toUInt(), red.toUInt(), green.toUInt(), blue.toUInt())
 
     override fun toString(): String = "0x${argb.toString(16)}"

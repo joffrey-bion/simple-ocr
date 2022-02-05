@@ -13,9 +13,16 @@ fun List<ImagePart>.filterTextSubImages() = mapNotNull { (it as? ImagePart.TextS
  * Detects text based on the given [textColorFilter]. The filter should match the color of the text.
  */
 class TextDetector(
+    /**
+     * A [ColorFilter] that decides which pixels are part of the text.
+     */
     private val textColorFilter: ColorFilter,
     /**
      * Whether to trim the space above and below the text in sub-images.
+     *
+     * This is done so that the text can be in a slightly different vertical position in the images, and still give
+     * consistent sub-images. If the text is guaranteed to be at the same vertical position in the images, you may
+     * disable this feature for more accuracy on the match.
      */
     private val trimSubImagesVertically: Boolean = true,
 ) {

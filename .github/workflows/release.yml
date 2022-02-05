@@ -1,0 +1,60 @@
+name: Manual release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "New version (and git tag)"
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk-version: [ 17 ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK ${{ matrix.jdk-version }}
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.jdk-version }}
+
+      - name: Test build before release
+        uses: burrunan/gradle-cache-action@v1
+        with:
+          job-id: jdk${{ matrix.jdk-version }}
+          arguments: build
+
+      - name: Generate Change Log
+        uses: burrunan/gradle-cache-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          job-id: jdk${{ matrix.jdk-version }}
+          # We already deal with caches in a previous gradle-cache-action
+          execution-only-caches: true
+          arguments: generateChangelog
+          properties: version=${{ github.event.inputs.version }}
+
+      - name: Commit and Push Change Log
+        id: changelog-commit
+        run: |
+          git config user.name '${{ github.actor }}'
+          git config user.email '${{ github.actor }}@users.noreply.github.com'
+          git add CHANGELOG.md
+          git commit -m "Version ${{ github.event.inputs.version }}"
+          git push
+          echo "::set-output name=sha::$(git rev-parse HEAD)"
+
+      - name: Create Release and Tag
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }} # using personal token to trigger publish workflow
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: ${{ github.event.inputs.version }}
+          commitish: ${{ steps.changelog-commit.outputs.sha }}

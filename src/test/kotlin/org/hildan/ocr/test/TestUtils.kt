@@ -1,4 +1,4 @@
-package org.hildan.dumbocr.test
+package org.hildan.ocr.test
 
 import java.awt.image.BufferedImage
 import java.nio.file.Files

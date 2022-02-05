@@ -1,6 +1,6 @@
-package org.hildan.dumbocr.generation
+package org.hildan.ocr.generation
 
-import org.hildan.dumbocr.toByteArray
+import org.hildan.ocr.toByteArray
 import java.awt.image.BufferedImage
 import java.nio.file.Path
 import java.security.MessageDigest

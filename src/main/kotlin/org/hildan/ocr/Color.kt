@@ -1,4 +1,4 @@
-package org.hildan.dumbocr
+package org.hildan.ocr
 
 import kotlin.math.abs
 

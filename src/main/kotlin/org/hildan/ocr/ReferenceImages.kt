@@ -1,6 +1,6 @@
-package org.hildan.dumbocr
+package org.hildan.ocr
 
-import org.hildan.dumbocr.generation.UniqueImageStore
+import org.hildan.ocr.generation.UniqueImageStore
 import java.awt.image.BufferedImage
 import java.net.URLDecoder
 import java.net.URLEncoder

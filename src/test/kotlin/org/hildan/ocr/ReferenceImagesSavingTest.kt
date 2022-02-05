@@ -1,8 +1,8 @@
-package org.hildan.dumbocr
+package org.hildan.ocr
 
-import org.hildan.dumbocr.generation.UniqueImageStore
-import org.hildan.dumbocr.test.TestCase
-import org.hildan.dumbocr.test.assertSameContent
+import org.hildan.ocr.generation.UniqueImageStore
+import org.hildan.ocr.test.TestCase
+import org.hildan.ocr.test.assertSameContent
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import kotlin.io.path.createTempDirectory
@@ -10,7 +10,7 @@ import kotlin.io.path.createTempDirectory
 class ReferenceImagesSavingTest {
 
     @ParameterizedTest(name = "splitAndSaveSubImages should split {0} correctly")
-    @MethodSource("org.hildan.dumbocr.test.TestCases#allTestWords")
+    @MethodSource("org.hildan.ocr.test.TestCases#allTestWords")
     fun splitAndSaveSubImages(testCase: TestCase) {
         val outputDir = createTempDirectory("generated-base-images").apply { toFile().deleteOnExit() }
 
@@ -20,7 +20,7 @@ class ReferenceImagesSavingTest {
     }
 
     @ParameterizedTest(name = "splitAndSaveSubImages should split {0} correctly")
-    @MethodSource("org.hildan.dumbocr.test.TestCases#allTestWords")
+    @MethodSource("org.hildan.ocr.test.TestCases#allTestWords")
     fun splitAndSaveSubImages_imageStore(testCase: TestCase) {
         val outputDir = createTempDirectory("generated-base-images").apply { toFile().deleteOnExit() }
         val imageStore = UniqueImageStore(outputDir)
@@ -30,7 +30,7 @@ class ReferenceImagesSavingTest {
     }
 
     @ParameterizedTest(name = "splitAndSaveCharacterImages should split {0} correctly")
-    @MethodSource("org.hildan.dumbocr.test.TestCases#testWordsWithForgivingKerning")
+    @MethodSource("org.hildan.ocr.test.TestCases#testWordsWithForgivingKerning")
     fun splitAndSaveCharacterImages(testCase: TestCase) {
         val outputDir = createTempDirectory("generated-base-images").apply { toFile().deleteOnExit() }
 

@@ -1,6 +1,6 @@
-package org.hildan.dumbocr.test
+package org.hildan.ocr.test
 
-import org.hildan.dumbocr.*
+import org.hildan.ocr.*
 import java.awt.image.BufferedImage
 import java.nio.file.Path
 import kotlin.io.path.*

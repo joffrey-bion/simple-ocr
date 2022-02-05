@@ -1,4 +1,4 @@
-package org.hildan.dumbocr
+package org.hildan.ocr
 
 import java.awt.image.BufferedImage
 
@@ -15,7 +15,7 @@ class NoAcceptableMatchException(
 ) : Exception()
 
 /**
- * A `DumbOcr` can read characters out of an image containing a single line of text.
+ * A `SimpleOcr` can read characters out of an image containing a single line of text.
  *
  * It does so by splitting the image into sub-images representing individual text elements, and matching the sub-images
  * against the given [referenceImages].
@@ -25,7 +25,7 @@ class NoAcceptableMatchException(
  *
  * The given [textDetector] defines pixels that are considered part of the text.
  */
-class DumbOcr(
+class SimpleOcr(
     private val referenceImages: List<ReferenceImage>,
     private val textDetector: TextDetector,
     /**
@@ -43,7 +43,7 @@ class DumbOcr(
     }
 
     /**
-     * Creates a new [DumbOcr] based on a default [ColorSimilarityFilter].
+     * Creates a new [SimpleOcr] based on a default [ColorSimilarityFilter].
      *
      * The given [textColor] is the expected color of the text to read.
      * Pixels with colors that are close enough to the [textColor] are considered part of the text.

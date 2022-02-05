@@ -1,4 +1,4 @@
-package org.hildan.ocr.generation
+package org.hildan.ocr.reference
 
 import org.hildan.ocr.toByteArray
 import java.awt.image.BufferedImage

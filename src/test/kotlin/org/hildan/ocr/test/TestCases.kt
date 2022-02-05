@@ -1,6 +1,7 @@
 package org.hildan.ocr.test
 
 import org.hildan.ocr.*
+import org.hildan.ocr.reference.ReferenceImage
 import java.awt.image.BufferedImage
 import java.nio.file.Path
 import kotlin.io.path.*

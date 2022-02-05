@@ -1,5 +1,6 @@
 package org.hildan.ocr
 
+import org.hildan.ocr.reference.ReferenceImages
 import org.hildan.ocr.test.TestCase
 import org.hildan.ocr.test.TestCases
 import org.junit.jupiter.params.ParameterizedTest

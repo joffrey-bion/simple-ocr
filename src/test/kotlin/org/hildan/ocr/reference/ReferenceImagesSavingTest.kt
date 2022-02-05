@@ -1,6 +1,7 @@
-package org.hildan.ocr
+package org.hildan.ocr.reference
 
-import org.hildan.ocr.generation.UniqueImageStore
+import org.hildan.ocr.Color
+import org.hildan.ocr.TextDetector
 import org.hildan.ocr.test.TestCase
 import org.hildan.ocr.test.assertSameContent
 import org.junit.jupiter.params.ParameterizedTest

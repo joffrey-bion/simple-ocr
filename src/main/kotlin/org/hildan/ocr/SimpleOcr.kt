@@ -1,5 +1,6 @@
 package org.hildan.ocr
 
+import org.hildan.ocr.reference.ReferenceImage
 import java.awt.image.BufferedImage
 
 private const val DEFAULT_MIN_RECOGNITION_SCORE = 1.0

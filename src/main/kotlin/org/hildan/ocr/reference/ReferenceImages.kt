@@ -1,6 +1,7 @@
-package org.hildan.ocr
+package org.hildan.ocr.reference
 
-import org.hildan.ocr.generation.UniqueImageStore
+import org.hildan.ocr.TextDetector
+import org.hildan.ocr.readImage
 import java.awt.image.BufferedImage
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -38,28 +39,29 @@ object ReferenceImages {
      *
      * A [glob] pattern can be used to filter the files from the given [directory].
      */
-    fun readFrom(directory: Path, glob: String = "*"): List<ReferenceImage> = directory.listDirectoryEntries(glob).map {
-        ReferenceImage(image = it.readImage(), text = inferTextFromPath(it))
-    }
+    fun readFrom(directory: Path, glob: String = "*.png"): List<ReferenceImage> =
+        directory.listDirectoryEntries(glob).map {
+            ReferenceImage(image = it.readImage(), text = inferTextFromPath(it))
+        }
 }
 
 // ignores anything after a space to allow disambiguation on case-insensitive file systems
 private fun inferTextFromPath(it: Path) = it.nameWithoutExtension.split(" ")[0].unescapeFilenameToChar()
 
 /**
- * Splits the given [image] into sub-images of text elements, and saves them as files into the given [outputDir].
+ * Splits the given [sampleImage] into sub-images of text elements, and saves them as files into the given [outputDir].
  * Each file is named based on the result of [subImageFilenameWithoutExt], which is called for each sub-image.
  *
  * Sub-images are often individual characters, but sometimes several characters can be grouped together due to kerning.
  * For instance, a lowercase letter following an uppercase T ou V can be part of a single sub-image (Te, To, Va...).
  */
 fun TextDetector.splitAndSaveSubImages(
-    image: BufferedImage,
+    sampleImage: BufferedImage,
     outputDir: Path,
     subImageFilenameWithoutExt: (index: Int, subImg: BufferedImage) -> String = { _, _ -> UUID.randomUUID().toString() },
 ): List<Path> {
     outputDir.createDirectories()
-    return splitTextElements(image).mapIndexed { index, subImg ->
+    return splitTextElements(sampleImage).mapIndexed { index, subImg ->
         outputDir.resolve(subImageFilenameWithoutExt(index, subImg) + ".png").also { path ->
             ImageIO.write(subImg, "png", path.toFile())
         }
@@ -67,22 +69,39 @@ fun TextDetector.splitAndSaveSubImages(
 }
 
 /**
- * Splits the given [image] into sub-images of text elements, and saves them as files into the given [imageStore].
+ * Splits the given [sampleImage] into sub-images of text elements, and saves them as files into the given [imageStore].
  * The image store reuses images and doesn't write duplicates.
  *
  * Sub-images are often individual characters, but sometimes several characters can be grouped together due to kerning.
  * For instance, a lowercase letter following an uppercase T ou V can be part of a single sub-image (Te, To, Va...).
  */
 fun TextDetector.splitAndSaveSubImages(
-    image: BufferedImage,
+    sampleImage: BufferedImage,
     imageStore: UniqueImageStore,
-): List<Path> = splitTextElements(image).map { subImg ->
+): List<Path> = splitTextElements(sampleImage).map { subImg ->
     imageStore.saveOrGetPath(subImg)
 }
 
 /**
- * Splits the given [image] into sub-images of text elements, and saves them as files into the given [outputDir].
- * Each file is named based on the characters (more specifically, the unicode code points) in [imageText].
+ * Reads all images from [sampleImagesDir] matching [sampleImagesGlob], and splits them into sub-images of text
+ * elements. The resulting sub-images are saved in the given [outputDir], with no exact duplicates.
+ *
+ * Sub-images are often individual characters, but sometimes several characters can be grouped together due to kerning.
+ * For instance, a lowercase letter following an uppercase T ou V can be part of a single sub-image (Te, To, Va...).
+ *
+ * Those sub-images should then be manually renamed according to their text content, so they can be used as reference
+ * images by the OCR. Load them using [ReferenceImages.readFrom].
+ */
+fun TextDetector.splitAndSaveSubImages(sampleImagesDir: Path, outputDir: Path, sampleImagesGlob: String = "*") {
+    val imageStore = UniqueImageStore(outputDir)
+    sampleImagesDir.listDirectoryEntries(sampleImagesGlob)
+        .map { it.readImage() }
+        .forEach { splitAndSaveSubImages(it, imageStore) }
+}
+
+/**
+ * Splits the given [sampleImage] into sub-images of text elements, and saves them as files into the given [outputDir].
+ * Each file is named based on the characters (more specifically, the unicode code points) in [sampleText].
  * Characters that are not valid as file names are escaped.
  *
  * ## Important note
@@ -94,12 +113,12 @@ fun TextDetector.splitAndSaveSubImages(
  * In that case, please prefer [splitAndSaveSubImages].
  */
 fun TextDetector.splitAndSaveCharacterImages(
-    image: BufferedImage,
-    imageText: String,
+    sampleImage: BufferedImage,
+    sampleText: String,
     outputDir: Path,
 ): List<Path> {
-    val codePoints = imageText.replace(whiteSpaceRegex, "").splitCodePoints()
-    return splitAndSaveSubImages(image, outputDir) { index, _ -> codePoints[index].escapeCharForFilename() }
+    val codePoints = sampleText.replace(whiteSpaceRegex, "").splitCodePoints()
+    return splitAndSaveSubImages(sampleImage, outputDir) { index, _ -> codePoints[index].escapeCharForFilename() }
 }
 
 private fun String.splitCodePoints() = codePoints().toList().map { Character.toString(it) }

@@ -1,1 +1,1 @@
-rootProject.name = "dumb-ocr"
+rootProject.name = "simple-ocr"

@@ -102,7 +102,7 @@ fun TextDetector.splitAndSaveCharacterImages(
     return splitAndSaveSubImages(image, outputDir) { index, _ -> codePoints[index].escapeCharForFilename() }
 }
 
-private fun String.splitCodePoints() = codePoints().toList().map { String(Character.toChars(it)) }
+private fun String.splitCodePoints() = codePoints().toList().map { Character.toString(it) }
 
 // extending string to support code points above the BMP
 private fun String.escapeCharForFilename() = when(this) {

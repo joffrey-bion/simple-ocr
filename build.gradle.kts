@@ -4,7 +4,7 @@ plugins {
     `maven-publish`
     signing
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
-    id("org.hildan.github.changelog") version "1.11.1"
+    id("org.hildan.github.changelog") version "2.2.0"
 }
 
 group = "org.hildan.ocr"

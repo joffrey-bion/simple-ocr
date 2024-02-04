@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.6.10"
     `maven-publish`
     signing
-    id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("org.hildan.github.changelog") version "1.11.1"
 }
 

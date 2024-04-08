@@ -4,13 +4,20 @@ plugins {
     `maven-publish`
     signing
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
+    id("ru.vyarus.github-info") version "2.0.0"
     id("org.hildan.github.changelog") version "2.2.0"
 }
 
 group = "org.hildan.ocr"
 description = "A simple OCR that recognizes characters in an image given a set of base character images"
 
+github {
+    user = "joffrey-bion"
+    license = "MIT"
+}
+
 changelog {
+    githubUser = github.user
     futureVersionTag = project.version.toString()
 }
 
@@ -54,31 +61,15 @@ publishing {
             artifact(sourcesJar)
             artifact(dokkaJavadocJar)
 
-            val githubUser = findProperty("githubUser") as String? ?: System.getenv("GITHUB_USER")
-            val githubSlug = "$githubUser/${rootProject.name}"
-            val githubRepoUrl = "https://github.com/$githubSlug"
-
             pom {
                 name.set(project.name)
                 description.set(project.description)
-                url.set(githubRepoUrl)
-                licenses {
-                    license {
-                        name.set("The MIT License")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
                 developers {
                     developer {
                         id.set("joffrey-bion")
                         name.set("Joffrey Bion")
                         email.set("joffrey.bion@gmail.com")
                     }
-                }
-                scm {
-                    connection.set("scm:git:$githubRepoUrl.git")
-                    developerConnection.set("scm:git:git@github.com:$githubSlug.git")
-                    url.set(githubRepoUrl)
                 }
             }
         }

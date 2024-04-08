@@ -13,4 +13,5 @@ updates:
     schedule:
       interval: "daily"
     labels:
+      - internal # there are no production dependencies at all in this project
       - dependencies

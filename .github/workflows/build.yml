@@ -28,3 +28,11 @@ jobs:
 
       - name: Gradle build
         run: ./gradlew build
+
+      - name: Gradle test local publication
+        env:
+          # GPG keys for signing plugin (sign maven artifacts)
+          # see https://docs.gradle.org/current/userguide/signing_plugin.html#sec:in-memory-keys
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SECRET_ASCII_ARMORED }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSWORD }}
+        run: ./gradlew publishToMavenLocal

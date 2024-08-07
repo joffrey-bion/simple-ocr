@@ -1,7 +1,14 @@
 # Change Log
 
-## [unspecified](https://github.com/joffrey-bion/simple-ocr/tree/unspecified) (2024-05-27)
-[View commits](https://github.com/joffrey-bion/simple-ocr/compare/1.0.0...unspecified)
+## [1.2.0](https://github.com/joffrey-bion/simple-ocr/tree/1.2.0) (2024-08-07)
+[View commits](https://github.com/joffrey-bion/simple-ocr/compare/1.1.0...1.2.0)
+
+**Upgraded dependencies:**
+
+- Bump Kotlin from 2.0.0 to 2.0.10 [\#31](https://github.com/joffrey-bion/simple-ocr/pull/31) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+## [1.1.0](https://github.com/joffrey-bion/simple-ocr/tree/1.1.0) (2024-05-26)
+[View commits](https://github.com/joffrey-bion/simple-ocr/compare/1.0.0...1.1.0)
 
 **Upgraded dependencies:**
 

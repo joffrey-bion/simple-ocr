@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.3.0](https://github.com/joffrey-bion/simple-ocr/tree/1.3.0) (2024-08-24)
+[View commits](https://github.com/joffrey-bion/simple-ocr/compare/1.2.0...1.3.0)
+
+**Upgraded dependencies:**
+
+- Bump jvm from 2.0.10 to 2.0.20 [\#35](https://github.com/joffrey-bion/simple-ocr/pull/35) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [1.2.0](https://github.com/joffrey-bion/simple-ocr/tree/1.2.0) (2024-08-07)
 [View commits](https://github.com/joffrey-bion/simple-ocr/compare/1.1.0...1.2.0)
 

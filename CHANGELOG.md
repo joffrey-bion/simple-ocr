@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.1](https://github.com/joffrey-bion/simple-ocr/tree/1.3.1) (2024-10-25)
+[View commits](https://github.com/joffrey-bion/simple-ocr/compare/1.3.0...1.3.1)
+
+
 ## [1.3.0](https://github.com/joffrey-bion/simple-ocr/tree/1.3.0) (2024-08-24)
 [View commits](https://github.com/joffrey-bion/simple-ocr/compare/1.2.0...1.3.0)
 

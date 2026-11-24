@@ -3,3 +3,5 @@
 # Ensure scripts keep their correct line endings
 *.sh text eol=lf
 *.bat text eol=crlf
+
+gradlew text eol=lf
